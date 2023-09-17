@@ -1,0 +1,2 @@
+Viver e morrer em BH vai ser um jogo de RPG, coming-of-age, no qual você passa o final dos seus 17 anos em Belo Horizonte, vendo a vida passar e tomando decisões que vão
+impactar (ou não) no seu futuro e no das pessoas ao seu redor. 
