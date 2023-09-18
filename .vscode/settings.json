@@ -1,0 +1,4 @@
+{
+    "ruby.intellisense": "rubyLocate",
+    "ruby.codeCompletion": "rcodetools"
+}
