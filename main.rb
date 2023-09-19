@@ -10,58 +10,57 @@ class GameWindow < Gosu::Window
     @font = Gosu::Font.new(20)
     @jovem = nil
     @nome = ""
-    @captura_nome = true
+    @estado = :captura_nome  # Estados possíveis: :captura_nome, :selecao_classe, :jogo
   end
 
   def update
-    if @captura_nome
+    case @estado
+    when :captura_nome
       # Lógica para capturar o nome aqui
-    else
+    when :selecao_classe
       if Gosu.button_down? Gosu::KB_1
         @jovem = EstudanteMedio.new(@nome, 17)
+        @estado = :jogo
       elsif Gosu.button_down? Gosu::KB_2
         @jovem = Artista.new(@nome, 17)
-      elsif Gosu.button_down? Gosu::KB_3
-        @jovem = Esportista.new(@nome, 17)
-      elsif Gosu.button_down? Gosu::KB_4
-        @jovem = JovemCrente.new(@nome, 17)
-      elsif Gosu.button_down? Gosu::KB_5
-        @jovem = Ativista.new(@nome, 17)
-      elsif Gosu.button_down? Gosu::KB_6
-        @jovem = Nerdola.new(@nome, 17)
+        @estado = :jogo
+      # ... (outros casos)
       end
+    when :jogo
+      # Lógica do jogo aqui
     end
   end
 
   def draw
-    if @captura_nome
-      @font.draw_text("Digite seu nome: #{@nome}", 10, 10, 0)
-    elsif @jovem
+    corBranca = 0xFFFFFF00
+    case @estado
+    when :captura_nome
+      @font.draw_text("Digite seu nome: #{@nome}", 10, 10, 0, 1.0, 1.0, 0xFFFFFF00)
+    when :selecao_classe
+      classes = [EstudanteMedio, Artista, Esportista, JovemCrente, Ativista, Nerdola]
+      classes.each_with_index do |classe, index|
+        resumo = mostrar_historia(classe.new("", 0))
+        @font.draw_text("#{index + 1}. #{resumo}", 10, 10, 0, 1.0, 1.0, 0xFFFFFF00)
+      end
+      when :jogo
       historia = mostrar_historia(@jovem)
-      @font.draw_text(historia, 10, 10, 0)
-    else
-      @font.draw_text("Pressione 1 para Estudante Médio, 2 para Artista ", 10, 10, 0) #terminar de incluir as classes aqui
+      @font.draw_text(historia, 10, 10, 0, 1.0, 1.0, 0xFFFFFF00)
     end
   end
 
   def button_down(id)
-    if @captura_nome
+    case @estado
+    when :captura_nome
       if id == Gosu::KB_RETURN
-        @captura_nome = false
+        @estado = :selecao_classe
       elsif id == Gosu::KB_BACKSPACE
         @nome.chop!
+      else
+        char = Gosu.button_id_to_char(id)
+        @nome << char if char
       end
     end
   end
-
-  def button_up(id)
-    # Lógica para quando uma tecla é liberada, se necessário
-  end
-
-  def needs_cursor?
-    true
-  end
 end
-
 window = GameWindow.new
 window.show
